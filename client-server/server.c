@@ -7,6 +7,7 @@
 */
 #include <stdio.h>
 #include <stdlib.h>
+
 #include <string.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
@@ -29,6 +30,7 @@ typedef struct _msg {
 
 pid_t client_pids[MAX_CLIENTS];
 unsigned long clients_number = 0;
+int msqid;
 
 
 void add_client(pid_t pid) {
@@ -45,11 +47,30 @@ void remove_client(pid_t pid) {
     }
 }
 
+void send_all(const char *const message) {
+    msg my_msg;
+    strcpy(my_msg.info.text, message);
+
+    for (int i = 0; i < clients_number; i++) {
+        my_msg.type = client_pids[i];
+        if (msgsnd(msqid, &my_msg, MSGSZ, 0) < 0) {
+            perror("msgsnd");
+            exit(-4);
+        }
+    }
+}
+
+void send_connect_message(pid_t pid) {
+    char message[MSGSZ];
+    sprintf(message, "Client with pid = %d connected", pid);
+    send_all(message);
+}
+
 
 int main() {
 //	int client_counter_current = 0;
 //	int client_counter_recent = 0;
-    int msqid;
+
     key_t key;
     size_t msg_length;
     msg my_msg;
@@ -58,7 +79,7 @@ int main() {
         perror("ftok");
         exit(-1);
     }
-if ((msqid = msgget(key, 0666 | IPC_CREAT | IPC_EXCL)) == -1) {
+    if ((msqid = msgget(key, 0666 | IPC_CREAT | IPC_EXCL)) == -1) {
         if (errno != EEXIST) {
             perror("Can't creat msgq");
             exit(-2);
@@ -74,6 +95,7 @@ if ((msqid = msgget(key, 0666 | IPC_CREAT | IPC_EXCL)) == -1) {
 
         if (strcmp(my_msg.info.text, "Connected") == 0) {
             add_client(my_msg.info.pid);
+            send_connect_message(my_msg.info.pid);
         } else if (strcmp(my_msg.info.text, "Disonnected") == 0) {
             remove_client(my_msg.info.pid);
         }

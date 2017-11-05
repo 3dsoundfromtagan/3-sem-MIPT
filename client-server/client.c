@@ -32,8 +32,9 @@ int main() {
     char command[CMD_LEN];
     int msqid;
     key_t key;
-    size_t msg_length;
-    pid_t id = getpid();
+    msg my_msg;
+    pid_t pid = getpid();
+    //size_t msg_length;
     //int i = 0;
 
     if ((key = ftok("./server", 0)) < 0) {
@@ -53,13 +54,12 @@ int main() {
         }
     }
 
-    msg *my_msg = (msg *) malloc(sizeof(msg));
+    my_msg.type = 255;
+    strcpy(my_msg.info.text, "Connected");
+    my_msg.info.pid = pid;
 
-    (my_msg)->type = 255;
-    strcpy((my_msg)->info.text, "Connected");
-    (my_msg)->info.pid = id;
     //msg_length = strlen((my_msg)->info.text) + 1;
-    if (msgsnd(msqid, (my_msg), MSGSZ, 0) < 0) {
+    if (msgsnd(msqid, &my_msg, MSGSZ, 0) < 0) {
         perror("msgsnd");
         exit(-4);
     }
@@ -75,28 +75,24 @@ int main() {
         }
 
         if (strcmp(command, "read") == 0) {
-            //shit is here
-            if (msgrcv(msqid, my_msg, MSGSZ, 0, 0) < 0) {
+            if (msgrcv(msqid, &my_msg, MSGSZ, pid, 0) < 0) {
                 perror("msgrcv");
                 exit(-6);
             }
-            printf("%s\n", my_msg->info.text);
+            printf("%s\n", my_msg.info.text);
         }
         if (strcmp(command, "quit") == 0) {
-            (my_msg)->type = SERVER_TYPE;
-            strcpy((my_msg)->info.text, "Disonnected");
+            my_msg.type = SERVER_TYPE;
+            strcpy(my_msg.info.text, "Disonnected");
+            my_msg.info.pid = pid;
             //msg_length = strlen((my_msg)->text) + 1;
-            if (msgsnd(msqid, (my_msg), MSGSZ, 0) < 0) {
+            if (msgsnd(msqid, &my_msg, MSGSZ, 0) < 0) {
                 perror("msgsnd");
                 exit(-4);
             }
             exit(0);
         }
     }
-
-
-
-
 
     // code for SENDER
     //msg* my_msg = (msg*)malloc(2 * sizeof(msg));
@@ -107,6 +103,5 @@ int main() {
         perror("msgsnd");
         exit(-5);
     }*/
-    free(my_msg);
     return 0;
 }
