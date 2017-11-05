@@ -23,7 +23,7 @@ void* num(void* args)
 	}
 
 	printf("%d\n", ((int*)args));
-		if(sem_post(&sem))
+	if(sem_post(&sem))
 	{
 		perror("sem_post()c");
 		exit(-1);

@@ -13,7 +13,7 @@ getpid - get process identification
 ***Создание процессов***
 Процессы в UNIX могут быть порождены с помощью системного вызова fork. Он создает точную копию того процесса, который его порождает. 
 Это единственный способ создания процесса
-Process ->   (LAUNCH)->	(memory		)
+Process ->   (LAUNCH)->				(memory		)
 						(recource		)
 						(count		)
 						(code		)

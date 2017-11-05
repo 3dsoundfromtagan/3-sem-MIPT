@@ -1,5 +1,7 @@
 #include <stdlib.h>
 #include <errno.h>
+#include <unistd.h>
+#include <limits.h >
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -11,7 +13,7 @@
 
 int main ()
 {
-	char buf_in[BUF_SIZE];  
+	char buf_in[PATH_MAX] = "mamahohotala";  
 	//char buf_out[BUF_SIZE];  
 	int i = 0;
 	int fi = open("in.txt", O_RDONLY);
