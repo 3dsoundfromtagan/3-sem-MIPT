@@ -29,17 +29,20 @@ void remove_client(pid_t pid) {
     }
 }
 
+void send_message(msg *my_msg) {
+    if (msgsnd(msqid, my_msg, MSGSZ, 0) < 0) {
+        perror("msgsnd");
+        exit(-4);
+    }
+}
+
 void send_all(const char *const message) {
     msg my_msg;
     strcpy(my_msg.info.text, message);
 
     for (int i = 0; i < clients_number; i++) {
         my_msg.type = client_pids[i];
-        printf("HUI Message:\ntype=%ld\ncomm_type=%d\npid=%d\ntext=\"%s\"\n\n", my_msg.type, my_msg.info.comm_type, my_msg.info.pid_from, my_msg.info.text);
-        if (msgsnd(msqid, &my_msg, MSGSZ, 0) < 0) {
-            perror("msgsnd");
-            exit(-4);
-        }
+        send_message(&my_msg);
     }
 }
 
@@ -59,12 +62,16 @@ int main() {
 
     ssize_t ret;
     while ((ret = msgrcv(msqid, &my_msg, MSGSZ, SERVER_TYPE, 0)) != -1) {
-        printf("Message:\ntype=%ld\ncomm_type=%d\npid=%d\ntext=\"%s\"\n\n", my_msg.type, my_msg.info.comm_type, my_msg.info.pid_from, my_msg.info.text);
+        printf("Message:\ntype=%ld\ncomm_type=%d\npid=%d\ntext=\"%s\"\n\n", my_msg.type, my_msg.info.comm_type,
+               my_msg.info.pid_from, my_msg.info.text);
 
         switch (my_msg.info.comm_type) {
             case WRITE_ALL:
+                send_all(my_msg.info.text);
                 break;
             case WRITE:
+                my_msg.type = my_msg.info.pid_to;
+                send_message(&my_msg);
                 break;
             case CONNECT:
                 add_client(my_msg.info.pid_from);
