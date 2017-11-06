@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/ipc.h>
 #include <sys/msg.h>
 #include <unistd.h>
 #include "protocol.h"
@@ -23,7 +24,6 @@ void send_message(msg *const message) {
         exit(-4);
     }
 }
-
 
 int main() {
     char command[CMD_LEN];
@@ -63,15 +63,5 @@ int main() {
             exit(0);
         }
     }
-
-    // code for SENDER
-    //msg* my_msg = (msg*)malloc(2 * sizeof(msg));
-
-    /*(my_msg + 1)->type = LAST_MESSAGE;
-    msg_length = 0;
-    if (msgsnd(msqid, (my_msg + 1), msg_length, 0) < 0) {
-        perror("msgsnd");
-        exit(-5);
-    }*/
     return 0;
 }

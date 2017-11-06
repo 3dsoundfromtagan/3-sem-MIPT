@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/ipc.h>
 #include <sys/msg.h>
 #include <zconf.h>
 #include "protocol.h"
@@ -50,6 +51,25 @@ void send_connect_message(pid_t pid) {
     char message[MSGSZ];
     sprintf(message, "Client with pid = %d connected", pid);
     send_all(message);
+}
+
+
+pid_t client_pids[MAX_CLIENTS];
+unsigned long clients_number = 0;
+
+
+void add_client(pid_t pid) {
+    client_pids[clients_number] = pid;
+    clients_number++;
+}
+
+void remove_client(pid_t pid) {
+    for (int i = 0; i < clients_number; i++) {
+        if (client_pids[i] == pid) {
+            client_pids[i] = client_pids[clients_number - 1];
+            clients_number--;
+        }
+    }
 }
 
 
