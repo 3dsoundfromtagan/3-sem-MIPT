@@ -1,5 +1,8 @@
-/*Клиент
- * Принимает, отправляет или отправляет всем сообщения
+/*Сервер 
+ * Сообщает о подключении клиента всем клиентам
+ * Принимает сообщение от клиента N и отправляет его либо всем, либо клиенту K
+ * Тип сообщения - номер клиента?! Сервер принимает тип 0, клиенты - i
+ * Задача 1. Заставить сервер писать сообщения о подключении
 */
 #include "protocol.h"
 
@@ -50,7 +53,8 @@ int main() {
             if ((my_msg.info.comm_type == WRITE) || (my_msg.info.comm_type == WRITE_ALL)) {
 				printf("%d: %s\n", my_msg.info.pid_from, my_msg.info.text);
 			}
-			if ((my_msg.info.comm_type == CONNECT) || (my_msg.info.comm_type == DISCONNECT)) {
+			//if ((my_msg.info.comm_type == CONNECT) || (my_msg.info.comm_type == DISCONNECT)) {
+			else {
 				printf("%s\n", my_msg.info.text);
 			}
 
