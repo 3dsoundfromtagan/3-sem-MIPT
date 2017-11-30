@@ -26,17 +26,15 @@ int main()
 	struct dirent *dir;
 	while ((dir = readdir(op)) != NULL)
 	{
-		printf("%s\n", dir->d_name);
 		if (stat(dir->d_name, &buf) == -1)
 		{
 			perror("stat");
 			exit(-1);
 		}
+		printf("%s\n", dir->d_name);
 		printf ("dev = %d\nino = %d\nmode = %d\nlink = %d\nuid = %d\ngid = %d\nrdev = %d\nsize = %d\nblksize = %d\nblocks = %d\n", buf.st_dev, buf.st_ino, buf.st_mode, buf.st_nlink, buf.st_uid, buf.st_gid, buf.st_rdev, buf.st_size, buf.st_blksize, buf.st_blocks);
 		printf("**********************************************\n");
 	}
-	
-	
 	
 	closedir(op);
 	return 0;
