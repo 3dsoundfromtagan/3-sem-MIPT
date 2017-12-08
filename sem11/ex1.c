@@ -42,7 +42,7 @@ int main ()
 	}
 	
 	clilen = sizeof(cliaddr);
-	if ( (newsockfd = accept(sockfd, (struct sockaddr* ) &cliaddr, (socklen_t*)&clilen)) < 0)
+	if ((newsockfd = accept(sockfd, (struct sockaddr*) &cliaddr, (socklen_t*)&clilen)) < 0)
 	{
 		perror("accept");
 		close(sockfd);

@@ -64,48 +64,6 @@ int main ()
 
 	printf("%s", recvline);
 	close(sockfd);
-	/*
-	if (bind(sockfd, (struct sockaddr*) &servaddr, sizeof(servaddr)))
-	{
-		perror("bind");
-		close(sockfd);
-		exit(-1);
-	}
-	
-	if (listen(sockfd, 1) < 0)
-	{
-		perror("listen");
-		close(sockfd);
-		exit(-1);
-	}
-	
-	clilen = sizeof(cliaddr);
-	if ((newsockfd = accept(sockfd, (struct sockaddr*) &cliaddr, &clilen)) < 0)
-	{
-		perror("accept");
-		close(sockfd);
-		exit(-1);
-	}
-	
-	if ((n = recv(sockfd, line, LEN, 0) ) < 0 ) {
-		 perror("recv");
-		 exit(-1);
-		 close(sockfd);
-	}
-
-	printf("%s", line);
-
-	if ((n = send(sockfd, line, LEN, 0) ) < 0 ) {
-		 perror("send");
-		 exit(-1);
-	}
-	
-	if (n < 0)
-	{
-		close(sockfd);
-		close(newsockfd);
-		exit(-1);
-	}*/
 	
 	return 0;
 }
